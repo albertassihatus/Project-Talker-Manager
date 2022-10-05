@@ -4,13 +4,16 @@ const router = express.Router();
 
 const crypto = require('crypto');
 
+const emailValidate = require('../middlewares/emailValidate');
+const passwordValidate = require('../middlewares/passwordValidate');
+
 const generateToken = () => crypto.randomBytes(8).toString('hex');
 
-  router.post('/', (_req, res) => {
+router.post('/', emailValidate, passwordValidate, (_req, res) => {
     try {
       res.status(200).json({ token: generateToken() });
     } catch (error) {
-      res.status(500).json({ message: error });
+      res.status(400).json({ message: error });
     }
   });
 
