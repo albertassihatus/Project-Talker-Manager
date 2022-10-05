@@ -1,13 +1,23 @@
 const express = require('express');
+
 const fs = require('fs').promises;
-const path = require('path');
+
+const { readTalkerData } = require('../utils/fsUtils');
+
+const talkerPath = './src/talker.json';
+
+const { nameValidate,
+    ageValidate,
+    talkValidate,
+    watchedAtValidate,
+    rateValidate } = require('../middlewares/signTalkers');
+
+const authenticate = require('../middlewares/authorization');
 
 const router = express.Router();
 
-const talkerPath = path.resolve(__dirname, '..', 'talker.json');
-
 router.get('/', async (req, res) => {
-    const talkerData = JSON.parse(await fs.readFile(talkerPath, 'utf8'));
+    const talkerData = await readTalkerData();
     if (!talkerData.length) {
         res.status(200).json([]);
     } else {
@@ -16,7 +26,7 @@ router.get('/', async (req, res) => {
 });
 
   router.get('/:id', async (req, res) => {
-    const talkerData = JSON.parse(await fs.readFile(talkerPath, 'utf8'));
+    const talkerData = await readTalkerData();
     const talkerId = talkerData.find(({ id }) => id === Number(req.params.id));
     if (!talkerId) {
     res.status(404).json({
@@ -26,5 +36,35 @@ router.get('/', async (req, res) => {
     res.status(200).json(talkerId);
 }
   });
+
+router.post(
+    '/',
+    nameValidate,
+    ageValidate,
+    talkValidate,
+    watchedAtValidate,
+    rateValidate,
+    authenticate,
+    async (req, res) => {
+        const product = req.body;
+
+        const products = await readTalkerData();
+        
+        // const newTalkersWithId = { id: products.length + 1, ...product };
+
+        products.push(product);
+
+        await fs.writeFile(talkerPath, JSON.stringify(products));
+
+        res.status(201).json(product);
+
+//         const allTalkers = JSON.stringify(
+//             newTalkersWithId,
+//         );
+
+//         await fs.writeFile(talkerPath, allTalkers);
+//         return newTalkersWithId;
+},
+);
 
 module.exports = router;
