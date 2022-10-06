@@ -7,12 +7,11 @@ const { readTalkerData } = require('../utils/fsUtils');
 const talkerPath = './src/talker.json';
 
 const { nameValidate,
+    authenticate,
     ageValidate,
     talkValidate,
     watchedAtValidate,
     rateValidate } = require('../middlewares/signTalkers');
-
-const authenticate = require('../middlewares/authorization');
 
 const router = express.Router();
 
@@ -39,31 +38,24 @@ router.get('/', async (req, res) => {
 
 router.post(
     '/',
+    authenticate,
     nameValidate,
     ageValidate,
     talkValidate,
     watchedAtValidate,
     rateValidate,
-    authenticate,
     async (req, res) => {
-        const product = req.body;
+        const product = { ...req.body };
 
         const products = await readTalkerData();
         
-        // const newTalkersWithId = { id: products.length + 1, ...product };
+        const newTalkersWithId = { id: products.length + 1, ...product };
 
-        products.push(product);
+        products.push(newTalkersWithId);
 
         await fs.writeFile(talkerPath, JSON.stringify(products));
 
-        res.status(201).json(product);
-
-//         const allTalkers = JSON.stringify(
-//             newTalkersWithId,
-//         );
-
-//         await fs.writeFile(talkerPath, allTalkers);
-//         return newTalkersWithId;
+        res.status(201).json(newTalkersWithId);
 },
 );
 
