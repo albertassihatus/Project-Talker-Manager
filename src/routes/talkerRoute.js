@@ -51,10 +51,45 @@ router.post(
 
         await writeNewTalkerData(talkers);
 
-        // await fs.writeFile(talkerPath, JSON.stringify(talkers));
-
         res.status(201).json(newTalkersWithId);
 },
 );
+
+router.put(('/:id'), 
+    authenticate, nameValidate, ageValidate, talkValidate,
+    watchedAtValidate,
+    rateValidate, 
+ async (req, res) => {
+  const { name, age, talk: { watchedAt, rate } } = req.body;
+  const { id } = req.params;
+  const talkers = await readTalkerData();
+  const findTalkerId = talkers.findIndex((talker) => talker.id === Number(id));
+  const putTalker = {
+    id: Number(id),
+    name,
+    age,
+    talk: {
+      watchedAt,
+      rate,
+    },
+  };
+  const newTalkers = [...talkers];
+  newTalkers[findTalkerId] = putTalker;
+  await writeNewTalkerData(newTalkers);
+  res.status(200).json(putTalker);
+});
+
+router.delete('/:id', 
+    authenticate,
+    async (req, res) => {
+    const { id } = req.params; 
+
+    const talkers = await readTalkerData();
+   
+    const findTalkerId = talkers.find((talker) => talker.id !== Number(id));
+   
+    await writeNewTalkerData(findTalkerId);
+    return res.status(204).end();
+});
 
 module.exports = router;
