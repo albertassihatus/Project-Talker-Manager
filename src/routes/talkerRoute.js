@@ -1,10 +1,6 @@
 const express = require('express');
 
-const fs = require('fs').promises;
-
-const { readTalkerData } = require('../utils/fsUtils');
-
-const talkerPath = './src/talker.json';
+const { readTalkerData, writeNewTalkerData } = require('../utils/fsUtils');
 
 const { nameValidate,
     authenticate,
@@ -45,15 +41,17 @@ router.post(
     watchedAtValidate,
     rateValidate,
     async (req, res) => {
-        const product = { ...req.body };
+        const talker = req.body;
 
-        const products = await readTalkerData();
+        const talkers = await readTalkerData();
         
-        const newTalkersWithId = { id: products.length + 1, ...product };
+        const newTalkersWithId = { id: talkers.length + 1, ...talker };
 
-        products.push(newTalkersWithId);
+        talkers.push(newTalkersWithId);
 
-        await fs.writeFile(talkerPath, JSON.stringify(products));
+        await writeNewTalkerData(talkers);
+
+        // await fs.writeFile(talkerPath, JSON.stringify(talkers));
 
         res.status(201).json(newTalkersWithId);
 },

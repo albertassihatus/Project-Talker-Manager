@@ -1,5 +1,3 @@
-// const path = require('path');
-
 const { join } = require('path');
 
 const fs = require('fs').promises;
@@ -16,28 +14,14 @@ async function readTalkerData() {
     }
 }
 
-// async function writeNewTalkerData(newTalkers) {
-//     try {
-//         const oldTalkers = await readTalkerData();
-//         const newTalkersWithId = { id: oldTalkers.length + 1, ...newTalkers };
-//         const allTalkers = JSON.stringify(
-//             newTalkersWithId,
-//         );
-
-//         await fs.writeFile(talkerPath, allTalkers);
-//         return newTalkersWithId;
-//     } catch (error) {
-//         console.log(`Erro na leitura do arquivo: ${error}`);
-//     }
-// }
-
 const writeNewTalkerData = async (newTalkers) => {
-    try {
-      await fs.writeFile(join(__dirname, talkerPath), JSON.stringify(newTalkers));
-    } catch (error) {
-      return null;
-    }
-  };
+  try {
+    const talkerData = join(talkerPath);
+    await fs.writeFile(talkerData, JSON.stringify(newTalkers));
+  } catch (error) {
+    console.error('Erro ao salvar o arquivo', error.message);
+  }
+};
 
 module.exports = {
     readTalkerData,
