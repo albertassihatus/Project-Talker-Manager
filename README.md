@@ -28,21 +28,23 @@ O projeto consiste em uma API que realiza um CRUD (Create, Read, Update e Delete
 
 
 ### Rodando o Projeto Localmente
-1° git clone git@github.com:albertassihatus/Project-Talker-Manager.git - Clone o repositório para sua máquina
 
-2° cd Project-Talker-Manager - Entre na pasta do repositório clonado
+1° `git clone git@github.com:albertassihatus/Project-Talker-Manager.git` - Clone o repositório para sua máquina<br />
 
-3° npm install - Instale as depedências
+2° `cd Project-Talker-Manager` - Entre na pasta do repositório clonado<br />
 
-4° npm start - Execute o programa
+3° `npm install` - Instale as depedências<br />
+
+4° `npm start` - Execute o programa<br />
 **Sugestão: Baixe o programa Insomina para executar cada operação do CRUD: https://snapcraft.io/install/insomnia/ubuntu
 
-Conexão com o Banco
+#### Conexão com o Banco 
+
 Para que o projeto rode em sua máquina, você deve criar as seguintes variáveis de ambiente:
 
-host: process.env.HOSTNAME
-user: process.env.MYSQL_USER
-password: process.env.MYSQL_PASSWORD
+`host: process.env.HOSTNAME` <br />
+`user: process.env.MYSQL_USER`<br />
+`password: process.env.MYSQL_PASSWORD` <br />
 
-Autor
-Hatus Albertassi
+# Autor
+   - Hatus Albertassi
